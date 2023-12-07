@@ -1,3 +1,5 @@
+import 'package:design_ui/DetailScreen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 void main() =>
@@ -34,6 +36,9 @@ class _Day_5State extends State<Day_5> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
+                    SizedBox(
+                      height: 40,
+                    ),
                     Text(
                       "Địa điểm nổi tiếng ở Cần Thơ",
                       style: TextStyle(
@@ -42,8 +47,8 @@ class _Day_5State extends State<Day_5> {
                           color: Colors.white),
                     ),
                     Container(
-                      margin: EdgeInsets.only(top: 470),
-                      height: 250,
+                      margin: EdgeInsets.only(top: 300),
+                      height: 210,
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         children: <Widget>[
@@ -91,11 +96,30 @@ class _Day_5State extends State<Day_5> {
     );
   }
 
-  Widget markWidget({image, name, population}) {
-    return AspectRatio(
-      aspectRatio: 2 / 1.9,
+  Widget markWidget({
+    required String image,
+    required String name,
+    required String population,
+  }) {
+    return CupertinoButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              print('Image: $image');
+              print('Name: $name');
+              print('Population: $population');
+              return DetailScreen(
+                selectedImage: image,
+                selectedName: name,
+                selectedPopulation: population,
+              );
+            },
+          ),
+        );
+      },
       child: Container(
-          margin: EdgeInsets.only(right: 20),
           padding: EdgeInsets.all(20),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30), color: Colors.white38),
@@ -121,31 +145,38 @@ class _Day_5State extends State<Day_5> {
                         color: Colors.grey[200]),
                     child: Text(
                       population + " mi",
-                      style: TextStyle(color: Colors.black45, fontSize: 16),
+                      style: TextStyle(color: Colors.black45, fontSize: 13),
                     ),
                   ),
                 ],
               ),
               SizedBox(
-                height: 30,
+                height: 10,
               ),
-              Text(
-                name,
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 22,
-                    fontWeight: FontWeight.w500),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Icon(
-                  Icons.star,
-                  color: Colors.yellow,
-                  size: 30,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    width: 110,
+                    child: Text(
+                      name,
+                      softWrap: false,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Icon(
+                      Icons.star,
+                      color: Colors.yellow,
+                      size: 30,
+                    ),
+                  )
+                ],
               )
             ],
           )),
