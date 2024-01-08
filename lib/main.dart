@@ -1,151 +1,157 @@
-import 'package:confirm_dialog/confirm_dialog.dart';
-import 'package:design_ui/widget/modal/itemData.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 void main() => runApp(
       MaterialApp(
-        theme: ThemeData(
-            primaryColor: Colors.blue,
-            visualDensity: VisualDensity.adaptivePlatformDensity),
-        debugShowCheckedModeBanner: false,
-        home: day11_ToDoList(),
-      ),
+          theme: ThemeData(
+              primaryColor: Colors.blue,
+              visualDensity: VisualDensity.adaptivePlatformDensity),
+          debugShowCheckedModeBanner: false,
+          home: day12_appWeather()),
     );
 
-class day11_ToDoList extends StatefulWidget {
-  day11_ToDoList({Key? key}) : super(key: key);
+class day12_appWeather extends StatefulWidget {
+  const day12_appWeather({Key? key}) : super(key: key);
 
   @override
-  State<day11_ToDoList> createState() => _day11_ToDoListState();
+  State<day12_appWeather> createState() => _day12_appWeatherState();
 }
 
-class _day11_ToDoListState extends State<day11_ToDoList> {
-  TextEditingController controllerName = TextEditingController();
-
-  void _handOnClick(BuildContext context) {
-    final newItem =
-        itemData(id: DateTime.now().toString(), name: controllerName.text);
-    setState(() {
-      if (controllerName.text.isEmpty) {
-        return;
-      }
-      items.add(newItem);
-      Navigator.pop(context);
-    });
-  }
-
-  void _handleDelteItem(String id) {
-    setState(() {
-      items.removeWhere((item) => item.id == id);
-    });
-  }
-
-  final List<itemData> items = [];
-
+class _day12_appWeatherState extends State<day12_appWeather> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        title: const Text("Công việc hằng ngày"),
+        title: Text("Weather App"),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: items
-              .map((e) =>
-                  cardWidget(index: items.indexOf(e), name: e.name, id: e.id))
-              .toList(),
+      body: Container(
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.bottomCenter,
+            colors: [
+              Color(0xff19D2FE),
+              Color(0xff1D6CF3),
+            ],
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showModalBottomSheet(
-              backgroundColor: Colors.grey[400],
-              shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.vertical(top: Radius.circular(20))),
-              context: context,
-              builder: (BuildContext context) {
-                return modalBottom(context: context);
-              });
-        },
-        child: Icon(
-          Icons.add,
-          size: 24,
-        ),
-      ),
-    );
-  }
-
-  Widget modalBottom({context}) {
-    return Padding(
-      padding: MediaQuery.of(context).viewInsets,
-      child: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            TextField(
-              controller: controllerName,
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(), labelText: "Công việc của bạn"),
-            ),
+            home_Weather_Icon(),
+            home_Temperature(),
+            home_Location(),
             SizedBox(
-              height: 20,
+              height: 40,
             ),
-            SizedBox(
-              height: 50,
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () => _handOnClick(context),
-                child: Text("Thêm công việc"),
-              ),
-            ),
+            home_DetailWeather(),
           ],
         ),
       ),
     );
   }
+}
 
-  Widget cardWidget({name, id, index}) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-      child: Container(
-        width: double.infinity,
-        height: 70,
-        decoration: BoxDecoration(
-          color:
-              (index % 2 == 0) ? Colors.green.shade500 : Colors.blue.shade500,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                name,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 22,
-                    fontWeight: FontWeight.w600),
-              ),
-              InkWell(
-                onTap: () async {
-                  if (await confirm(context)) {
-                    _handleDelteItem(id);
-                  } else {
-                    print("Cancle");
-                  }
-                },
-                child: Icon(
-                  Icons.delete,
-                  color: Colors.white,
-                ),
-              )
-            ],
-          ),
-        ),
+class home_Weather_Icon extends StatelessWidget {
+  const home_Weather_Icon({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.sizeOf(context);
+    return Container(
+      width: size.width / 2,
+      child: Image.asset(
+        "assets/images/moderateorheavyrainshower.png",
+        fit: BoxFit.cover,
       ),
+    );
+  }
+}
+
+class home_Temperature extends StatelessWidget {
+  const home_Temperature({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          "45",
+          style: TextStyle(
+              fontSize: 100, fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        Text(
+          "0",
+          style: TextStyle(
+              fontSize: 36, fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+      ],
+    );
+  }
+}
+
+class home_Location extends StatelessWidget {
+  const home_Location({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final df = DateFormat("dd-MM-yyyy");
+    return Column(
+      children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Image.asset("assets/icons/location.png"),
+            SizedBox(
+              width: 20,
+            ),
+            Text(
+              "Ho CHi Minh",
+              style: TextStyle(fontSize: 28, color: Colors.white),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 17,
+        ),
+        Text(
+          df.format(DateTime.now()),
+          style: TextStyle(fontSize: 28, color: Colors.white),
+        ),
+      ],
+    );
+  }
+}
+
+class home_DetailWeather extends StatelessWidget {
+  const home_DetailWeather({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        Column(
+          children: <Widget>[
+            Image.asset("assets/icons/Vector.png"),
+            Text(
+              "5km/h",
+              style: TextStyle(fontSize: 21, color: Colors.white),
+            )
+          ],
+        ),
+        Column(
+          children: <Widget>[
+            Image.asset("assets/icons/humidity.png"),
+            Text(
+              "5km/h",
+              style: TextStyle(fontSize: 21, color: Colors.white),
+            )
+          ],
+        )
+      ],
     );
   }
 }
